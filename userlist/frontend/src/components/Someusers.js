@@ -1,25 +1,25 @@
 import React from 'react'
 
-const SomeUserItem = ({someuser}) => {
+const SomeUserItem = ({item}) => {
     return (
         <tr>
             <td>
-                {someuser.first_name}
+                {item.first_name}
             </td>
             <td>
-                {someuser.last_name}
+                {item.last_name}
             </td>
             <td>
-                {someuser.username}
+                {item.username}
             </td>
             <td>
-                {someuser.email}
+                {item.email}
             </td>
         </tr>
     )
 }
 
-const SomeUserList = ({someusers}) => {
+const SomeUserList = ({items}) => {
     return (
         <table>
             <th>
@@ -34,7 +34,7 @@ const SomeUserList = ({someusers}) => {
             <th>
                 User Email
             </th>
-            {someusers.map((someuser) => <SomeUserItem someuser={someuser} />)}
+            {items.map((item) => <SomeUserItem item={item} />)}
         </table>
 )
 }

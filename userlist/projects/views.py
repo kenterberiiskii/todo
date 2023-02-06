@@ -26,9 +26,10 @@ class TodoModelViewSet(ModelViewSet):
     pagination_class = TodoLimitOffsetOagination
     filterset_fields = ['todo_project']
 
+
+
     def destroy(self, request, *args, **kwargs):
         item = self.get_object()
-        
-
+        item.todo_deleted = True
         serializer = self.get_serializer(item)
         return Response(serializer.data)
