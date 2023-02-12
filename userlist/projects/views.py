@@ -1,3 +1,4 @@
+from rest_framework import permissions
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
@@ -14,6 +15,7 @@ class TodoLimitOffsetOagination(LimitOffsetPagination):
     default_limit = 20
 
 class ProjectModelViewSet(ModelViewSet):
+    permission_classes = [permissions.IsAuthenticated]
     queryset = Project.objects.all()
     serializer_class = ProjectModelSerializer
     pagination_class = ProjectLimitOffsetOagination
