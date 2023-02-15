@@ -5,3 +5,8 @@ class UserModelSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = SomeUser
         fields = '__all__'
+
+class UserModelSerializerBase(HyperlinkedModelSerializer):
+    class Meta:
+        model = SomeUser
+        fields = '__all__'
