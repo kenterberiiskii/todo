@@ -1,7 +1,8 @@
+from rest_framework import generics
 from rest_framework import permissions
 from rest_framework.viewsets import ModelViewSet
-from .models import SomeUser
-from .serializers import UserModelSerializer, UserModelSerializerBase
+from .models import SomeUser, SuperUser
+from .serializers import UserModelSerializer, UserModelSerializerBase, SuperUserModelSerializerBase
 
 
 class UserModelViewSet(ModelViewSet):
@@ -14,4 +15,16 @@ class UserModelViewSet(ModelViewSet):
             return UserModelSerializer
         return UserModelSerializerBase
 
+class UserListAPIView(generics.ListAPIView):
+    # queryset = SomeUser.objects.all()
+    serializer_class = UserModelSerializer
 
+    def get_queryset(self):
+        if self.request.version == '0.2':
+            return SuperUser.objects.all()
+        return SomeUser.objects.all()
+
+    def get_serializer_class(self):
+        if self.request.version == '0.2':
+            return SuperUserModelSerializerBase
+        return UserModelSerializer
