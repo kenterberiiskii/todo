@@ -4,6 +4,7 @@ import SomeUserList from './components/Someusers.js'
 import ProjectList from './components/Project.js'
 import TodoList from './components/Todo.js'
 import LoginForm from './components/Auth.js'
+import ProjectForm from './components/ProjectForm.js'
 import {BrowserRouter, Route, Link, Switch, Redirect} from 'react-router-dom'
 
 import axios from 'axios'
@@ -54,7 +55,7 @@ class App extends React.Component {
     get_token_from_storage() {
         const cookies = new Cookies()
         const token = cookies.get('token')
-        this.setState({'token': token}, ()=>this.load_data()))
+        this.setState({'token': token}, ()=>this.load_data())
     }
 
     get_token(username, password) {
@@ -79,6 +80,34 @@ class App extends React.Component {
         this.get_token_from_storage()
     }
 
+    deleteProject(id) {
+        const headers = this.get_headers()
+        axios.delete(`http://127.0.0.1:8000/api/projects/${id}`, {headers, headers})
+        .then(response => {
+            this.setState({projects: this.state.projects.filter((item)=>item.id !==id)})
+        }).catch(error => console.log(error))
+    }
+
+    deleteTodo(id) {
+        const headers = this.get_headers()
+        axios.delete(`http://127.0.0.1:8000/api/todo/${id}`, {headers, headers})
+        .then(response => {
+            this.setState({todo: this.state.todo.filter((item)=>item.id !==id)})
+        }).catch(error => console.log(error))
+    }
+
+    createProject(prj_name, prj_link) {
+        const headers = this.get_headers()
+        const data = {prj_name: prj_name, prj_link: prj_link}
+        axios.post(`http://127.0.0.1:8000/api/projects/`, data, {headers, headers})
+        .then(response => {
+        let new_project = response.data
+        const prj_name = this.state.prj_name.filter((item) => item.id ===
+        new_project.prj_name)[0]
+        new_project.prj_name = prj_name
+        this.setState({projects: [...this.state.projects, new_project.prj_name]})
+        }).catch(error => console.log(error))
+    }
 
     render() {
         return (
@@ -105,11 +134,12 @@ class App extends React.Component {
                 <Switch>
                     <Route exact path='/' component={() => <SomeUserList items={this.state.someusers} />} />
                     <Redirect from='/someusers' to='/' />
-                    <Route exact path='/projects' component={() => <ProjectList items={this.state.projects} />} />
-                    <Route exact path='/todo' component={() => <TodoList items={this.state.todo} />} />
                     <Route exact path='/login' component={() => <LoginForm
                     get_token={(username, password) => this.get_token(username, password)} />} />
                     <Route component={NotFound404} />
+                    <Route exact path='/projects' component={() => <ProjectList items={this.state.projects} deleteProject={(id)=>this.deleteProject(id)} />} />
+                    <Route exact path='/todo' component={() => <TodoList items={this.state.todo} deleteTodo={(id)=>this.deleteTodo(id)} />} />
+                    <Route exact path='/projects/create' component={() => <ProjectForm createProject={(prj_name, prj_link) => this.createProject(prj_name, prj_link)} />} />
                 </Switch>
                 </BrowserRouter>
             </div>
